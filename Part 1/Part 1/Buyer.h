@@ -1,83 +1,58 @@
-// Notes at the bottom of the page.
+/* Notes:
+	getPassword
+		Doesn't exist, intentionally.
+*/
 #pragma warning(disable:4996)
 #ifndef __BUYER_H
 #define __BUYER_H
 
-#include "Product.h"
-// class Product;
+#include "Wishlist.h"
+#include "Cart.h"
+#include "Address.h"
+#include "PurchaseHistory.h"
 
-class Address;
-class ReceiptBuyer;
 
-const int EMPTY = -1;	//	For the index array. S
+const int EMPTY = -1;	//	For the index array. 
 
 class Buyer
 {
+private:
+	char*						username;
+	int							password;
+	Address						address;
+	Wishlist					wishlist;
+	Cart						cart;
+	PurchaseHistory				history;	//	History of all past purchases. It contains receipts.
+
 public:
+// Constructors and Destructor
 	Buyer() = delete;
-	Buyer(char* name, int password, Address* address);
+	Buyer(const char* name, int password, const Address& address);
+	Buyer(const Buyer&) = delete;	//	No copying of buyers. Each account is unique.
+	~Buyer();
 
-public:
 //	Getters
-	const char* getUsername()							const;
-	const Address* getAddress()							const;
-	const Product** getWishlist()							const;
-	int getCartLogSize()								const;
-	bool Buyer::passwordCheck(int password)				const;
+	const char*					getUsername()					const;
+	bool						passwordCheck(int password)		const;
+	void						showBuyer()						const;
 
-	void showBuyer()									const;
-	bool showAllWishlistProducts()						const;
-
-	const Product** getWishlistProductAddress(int index)		const;
-	double getCurrentCheckoutCost()						const;
-	int getWishLogSize()								const;
-	const Product*** getCart()							const;	//	Items for check-out.
-	int Buyer::getCheckoutLogSize()						const;
+	const Address&				getAddress()					const;
+	Address&					getAddress();
+	const Wishlist&				getWishlist()					const;
+	Wishlist&					getWishlist();
+	const Cart&					getCart()						const;
+	Cart&						getCart();
+	const PurchaseHistory&		getPurchaseHistory()			const;
+	PurchaseHistory&			getPurchaseHistory();
 
 //	Setters
-	bool changeUsername(const char* username);
-	bool resetPassword(const int password);
-	bool setAddress(Address* address);		//	QUESTION: can it be const address?
+	bool						changeUsername(const char* username);
+	bool						resetPassword(int newPassword, int currentPasswordVerification);
+	bool						setAddress(const Address& address);	
 
-	bool addToWishlist(const Product* product);
-	bool increaseWishlistSize();
+	bool						proceedToCheckout(Receipt* receipt);	//	 This function pays for the items in the Checkout line, and removes them from the wishlist.
 
-	/*
-	addToCheckout receives products that are meant to be in the wishlist,
-	and adds them to an array of items to be checked out.
-	It must also receive the index of the item in the wishlist,
-	in order to check that the item truly is from the wishlist.
-	This is because only wishlisted items can be chosen for checkout.
-	*/
-	bool addToCart(const Product** product);
-	bool increaseCartSize();
-
-	bool proceedToCheckout(ReceiptBuyer* receipt);	//	 This function pays for the items in the Checkout line, and removes them from the wishlist.
-	bool increasePurchaseHistorySize();
-
-	~Buyer();	//	DESTRUCTOR
-private:
-	char				username[LEN];
-	int					password;
-	Address*			address;
-
-// Wishlist
-	const Product**		wishlist;	//	this is an array of products that the buyer considers purchasing. Dynamically allocated
-	int					wishLogSize, wishPhySize;		//	Variables to manage the dynamic cart array.
-
-// Cart \ Checkout
-	const Product***	cart;		//	Items to be purchased - the cart elements point to products in the wishlist. It's *** to make it easier to remove them from the wishlist at checkout.
-	int					cartLogSize, cartPhySize;
-
-	double				currCheckoutCost;
-	ReceiptBuyer**		purchaseHistory;				//	an array of past purchases
-	int					historyLogSize, historyPhySize;
-	// Product* ownedProducts;	//	??? do we need this?
+	friend class System;
 };
 #endif 
-/* Notes:
 
-
-getPassword
-	Doesn't exist, intentionally.
-*/

@@ -1,32 +1,36 @@
 #include "Seller.h"
 #include "Product.h"
 #include "Address.h"
+#include "Feedback.h"
 
 #include <iostream>
 using namespace std;
 
 
-Seller::Seller(char* name, int password, Address* address)
+Seller::Seller(char* name, int password, const Address& address) : address(address)
 {
-	changeUsername(name);
-	resetPassword(password);
-	setAddress(address);
+	this->username = strdup(name);
+	this->password = password;
 
 	feedPhySize = 10;
 	feedLogSize = 0;
-	feedbacks = new Feedback*[feedPhySize];
+	feedbacks = new const Feedback*[feedPhySize];
+	for (int i = 0; i < feedPhySize; i++)
+		feedbacks[i] = nullptr;
 	if (!feedbacks)
-		cout << "Error: Failed to allocate space for feedbacks for Seller.\n";
+		exit(1);
 
 	catPhySize = 10;
 	catLogSize = 0;
 	catalog = new Product*[catPhySize];
 	if (!catalog)
-		cout << "Error: Failed to allocate space for merchandise for Seller.\n";
+		exit(1);
 }//constructor
 
 Seller::~Seller()
 {
+	delete[]username;
+
 	int i = 0;
 	for (i = 0; i < feedLogSize; i++)
 		delete feedbacks[i];
@@ -45,33 +49,21 @@ const char* Seller::getUsername() const
 {
 	return username;
 }
-const Address* Seller::getAddress() const
+const Address& Seller::getAddress() const
 {
 	return address;
 }
-const Product* Seller::getProduct(const char* name, int& indexAtSeller)	const
-/*
-A seller offers two options of retrieving a product of his;
-Either searching by product name, or by index at his store.
 
-IDEA: change index to something better. Perhaps private serial?
-*/
+const Product* Seller::getProduct(const char* name) const
 {
-	if (indexAtSeller != UNKNOWN_INDEX)
-	{
-		return catalog[indexAtSeller];
-	}
 	for (int i = 0; i < catLogSize; i++)
 	{
 		if (strcmp(catalog[i]->getName(), name) == 0)
-		{
-			indexAtSeller = i;
 			return catalog[i];
-		}
 	}
-	indexAtSeller = NOT_FOUND;
 	return nullptr;	//	Didn't find the product.
 }
+
 int Seller::getCatalogLogSize() const
 {
 	return catLogSize;
@@ -81,8 +73,7 @@ int Seller::getCatalogLogSize() const
 void Seller::showSeller() const
 {
 	cout << "Username: " << username << endl;
-	address->showAddress();
-	cout << endl;
+	address.showAddress();
 }
 
 void Seller::showAllMerchandise() const
@@ -104,8 +95,20 @@ bool Seller::passwordCheck(int password) const
 		return false;
 }
 
+void Seller::showAllFeedbacks()	const
+{
+	for (int i = 0; i < feedLogSize; i++)
+	{
+		cout << i+1 << ") "; 
+		feedbacks[i]->showFeedback();
+	}
+	cout << endl;
+}
 
-// ------------------------------- SETTERS ------------------------------- //
+
+
+
+// ------------------------------- NON-CONST METHODS ------------------------------- //
 
 bool Seller::changeUsername(const char* username)
 {
@@ -113,28 +116,25 @@ bool Seller::changeUsername(const char* username)
 	return true;
 }
 
-bool Seller::resetPassword(const int password)
+bool Seller::resetPassword(int newPassword, int currentPasswordVerification)
 {
-	//int verification;
-	//cout << "Please enter current passowrd:\n";
-	//cin >> verification;
-	//if (verification != this->password)
-	//{
-	//	cout << "Passwords do not match.\n";
-	//	return false;
-	//}
+	if (currentPasswordVerification != password)
+		return false;
+	if (newPassword < 0)	//	Cannot enter negative number.
+		return false;
 	if (password < 0)
 		return false;		//	cannot enter negative number
 	this->password = password;
 	return true;
 }
-bool Seller::setAddress(Address* address)
+
+bool Seller::setAddress(const Address& other)
 {
-	this->address = address;
+	address = other;
 	return true;
 }
 
-bool Seller::addFeedback(Feedback* feedback)
+bool Seller::addFeedback(const Feedback* feedback)
 {
 	if (!feedback)
 		return false;
@@ -144,15 +144,20 @@ bool Seller::addFeedback(Feedback* feedback)
 			return false;
 
 	feedbacks[feedLogSize++] = feedback;
+	return true;
 }
 bool Seller::increaseFeedbackSize()
 {
 	feedPhySize *= 2;
-	Feedback** temp = new Feedback*[feedPhySize];
+	const Feedback** temp = new const Feedback*[feedPhySize];
 	if (!temp)		//	Failed to allocate.
 		return false;
-	for (int i = 0; i < feedLogSize; i++)
+	int i = 0;
+	for (i = 0; i < feedLogSize; i++)
 		temp[i] = feedbacks[i];
+	int j;
+	for (j = i; j < feedPhySize; j++)
+		temp[i] = nullptr;
 	delete[]feedbacks;
 	feedbacks = temp;
 	return true;

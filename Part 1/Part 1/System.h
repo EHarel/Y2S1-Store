@@ -11,49 +11,50 @@ class Buyer;
 
 class System
 {
-public:	//	Constructors
+private:
+	char					name[LEN];			// name of the system
+	Buyer**					buyers;
+	int						buyLogSize, buyPhySize;
+	Seller**				sellers;			//	Dynamically allocated array of Sellers.
+	int						sellLogSize, sellPhySize;
+	// products array
+
+public:
+// Constructors and Destructor
 	System() = delete;
 	System(const char* name);
-	
-public:	//	Getters
-	const Buyer** getAllBuyers()					const;
-	const Seller** getAllSellers()					const;
-	const Buyer* getBuyer(int index)				const;
-	const Seller* getSeller(int index)				const;
-	bool isAvailableUsername(const char* name)		const;
-	
-	int getBuyerLogSize()							const;
-	int getBuyerPhySize()							const;
-	int getSellerLogSize()							const;
-	int getSellerPhySize()							const;
-	int getLatestSerial()							const;
-	Buyer* accessBuyerAccount(char* name, int password);
-	Seller* accessSellerAccount(char* name, int password);
-
-public:	//	Setters
-	bool setSystemName(const char* name);
-
-	bool addBuyer(Buyer* newBuyer);
-	bool addSeller(Seller* newSeller);
-
-	bool increaseBuyerArray();			//	IDEA: Maybe concentrate them both into a single function? The downside is possibly increasing an array we don't want to, if it happens that the log size is equal to the physical (because it will run both checks)
-	bool increaseSellerArray();
-	bool advanceSerial();				//	Is there some way to control this?
-
+	System(const System&) = delete;
 	~System();
-private:
-	char			name[LEN];		// name of the system
-	Buyer**			buyers;
-	int				buyLogSize, buyPhySize;
-	Seller**		sellers;			//	Dynamically allocated array of Sellers.
-	int				sellLogSize, sellPhySize;
-	// class ProductsArr
-	// products array
-	int				latestSerialNum;
+	
+// Const methods
+	const Buyer**			getAllBuyers()					const;
+	const Seller**			getAllSellers()					const;
+	const Buyer*			getBuyer(int index)				const;
+	const Seller*			getSeller(int index)				const;
+	bool					isAvailableUsername(const char* name)		const;
+	
+	int						getBuyerLogSize()							const;
+	int						getBuyerPhySize()							const;
+	int						getSellerLogSize()							const;
+	int						getSellerPhySize()							const;
+
+	void					showAllProducts()							const;
+	
+	
+	Buyer*					accessBuyerAccount(char* name, int password);		//	Currently it returns a pointer rather than Buyer&, because a pointer allows an indication that the password isn't correct.
+	Seller*					accessSellerAccount(char* name, int password);		//	IDEA: find a way to return Class& instead of pointer, with some sort of password validation?
+
+// Non-const methods
+	bool					setSystemName(const char* name);
+
+	bool					addBuyer(Buyer* newBuyer);
+	bool					addSeller(Seller* newSeller);
+
+
+	bool					addFeedbackToSeller(const char* sellerUsername, const Feedback* buyerFeedback);
+
+
+	bool					increaseBuyerArray();			//	IDEA: Maybe concentrate them both into a single function? The downside is possibly increasing an array we don't want to, if it happens that the log size is equal to the physical (because it will run both checks)
+	bool					increaseSellerArray();
 };
 #endif 
-
-/*
-Note:	
-	No Move or Copy constructor for System. We can add, but right now we don't see any potential use, because System occurs only once.
-*/

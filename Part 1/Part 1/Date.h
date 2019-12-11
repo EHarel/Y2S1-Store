@@ -4,20 +4,24 @@
 
 class Date
 {
+private:
+	unsigned int			day;
+	unsigned int			month;
+	unsigned int			year;
+
 public:
+	Date() = delete;
 	Date(unsigned int day, unsigned int month, unsigned int year);
 
-	inline unsigned int getDay()		const;
-	inline unsigned int getMonth()		const;
-	inline unsigned int getYear()		const;
+// Const methods
+	inline unsigned int		getDay()		const;
+	inline unsigned int		getMonth()		const;
+	inline unsigned int		getYear()		const;
+	void					show()			const;
 
-	bool setDay(unsigned int day);
-	bool setMonth(unsigned int month);
-	bool setYear(unsigned int year);
-
-private:
-	unsigned int	day;
-	unsigned int	month;
-	unsigned int	year;
+// Non-const methods
+	bool					setDay(unsigned int day);
+	bool					setMonth(unsigned int month);
+	bool					setYear(unsigned int year);
 };
 #endif

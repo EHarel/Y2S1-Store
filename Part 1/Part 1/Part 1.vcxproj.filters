@@ -42,13 +42,16 @@
     <ClCompile Include="Seller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ProductSellerList.cpp">
+    <ClCompile Include="Wishlist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReceiptBuyer.cpp">
+    <ClCompile Include="Cart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReceiptSeller.cpp">
+    <ClCompile Include="PurchaseHistory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Receipt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,13 +80,16 @@
     <ClInclude Include="Seller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProductSellerList.h">
+    <ClInclude Include="Wishlist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ReceiptSeller.h">
+    <ClInclude Include="Cart.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ReceiptBuyer.h">
+    <ClInclude Include="PurchaseHistory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Receipt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

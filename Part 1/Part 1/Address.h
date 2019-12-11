@@ -2,20 +2,27 @@
 #ifndef __ADDRESS_H
 #define __ADDRESS_H
 
-#include "Product.h"	//	PROBLEM: the only reason this is here is because of const int LEN. We should find a different solution to this.
-
 class Address 
 {
+private: // All the strings are dynamically allocated.
+	char*		street;
+	int			houseNum;
+	char*		city;
+	char*		country;
+
 public:
-	Address() = delete;	//	make it clear we don't want a default constructor - add it to all classes
-	Address(char* street, int houseNumber, char* city, char* country);
+// Constructors and Destructor
+	Address() = delete;	// No default constructor.
+	Address(const char* street, int houseNumber, const char* city, const char* country);
+	Address(const Address& other);
+	Address(Address&& other);
+	~Address();
 
 //	Getters
 	const char* getStreet()		const;
 	int			getHouseNum()	const;
 	const char*	getCity()		const;
 	const char*	getCountry()	const;
-
 	void		showAddress()	const;
 
 //	Setters
@@ -24,12 +31,7 @@ public:
 	bool setCity(const char* city);
 	bool setCountry(const char* country);
 
-
-	//	DESTRUCTOR
-private:
-	char		street[LEN];
-	int			houseNum;
-	char		city[LEN];
-	char		country[LEN];
+// Operators
+	const Address& operator=(const Address& other);
 };
 #endif

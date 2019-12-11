@@ -6,10 +6,6 @@
 #include <string.h>
 using namespace std;
 
-
-static bool allocationCheck(void* ptr);
-
-
 System::System(const char* name)
 {
 	setSystemName(name);
@@ -17,16 +13,16 @@ System::System(const char* name)
 	buyPhySize = 10;
 	buyLogSize = 0;
 	buyers = new Buyer*[buyPhySize];
-	if (!allocationCheck(buyers))
-		cout << "Failed to allocate room for Buyer array.\n";
+	if (!buyers)
+		exit(1);
+	buyers[0] = nullptr;
 
 	sellPhySize = 5;		//	Expect less Sellers than buyers.
 	sellLogSize = 0;
 	sellers = new Seller*[sellPhySize];
-	if (!allocationCheck(sellers))
-		cout << "Failed to allocate room for Seller array.\n";
-
-	latestSerialNum = 1000000;	
+	if (!sellers)
+		exit(1);
+	sellers[0] = nullptr;	
 }
 
 System::~System()
@@ -77,10 +73,12 @@ It goes over one array, then the other, stopping if it has found it.
 */
 {
 	int i = 0;
+// Go over buyers array.
 	for (i = 0; i < buyLogSize; i++)
 		if (strcmp(buyers[i]->getUsername(), name) == 0)		//	Found similar username.
 			return false;
 
+// Go over sellers array.
 	for (i = 0; i < sellLogSize; i++)
 		if (strcmp(sellers[i]->getUsername(), name) == 0)
 			return false;
@@ -104,15 +102,29 @@ int System::getSellerPhySize()							const
 {
 	return sellPhySize;
 }
-int System::getLatestSerial()							const
+
+void System::showAllProducts()	const //	A bit of a "brutish" method that just shows all the products
 {
-	return latestSerialNum;
+	int productCount = 0;
+
+	for (int i = 0; i < sellLogSize; i++)
+	{
+		if (sellers[i]->catLogSize > 0)	//	If seller i has items.
+		{
+			cout << "Products of " << sellers[i]->username << ": ";
+			cout << endl;
+			sellers[i]->showAllMerchandise();
+			cout << endl;
+			productCount += sellers[i]->catLogSize;
+		}
+	}
+	cout << "Total number of available products: " << productCount << endl << endl;
 }
 
 Buyer* System::accessBuyerAccount(char* name, int password)
 /*
 This function provides access to a Buyer Account for the user.
-This allows the user to change this account.
+This allows the user to take actions with his account, such as adding to wishlist, checking out, etc.
 */
 {
 	for (int i = 0; i < buyLogSize; i++)
@@ -128,7 +140,6 @@ This allows the user to change this account.
 	}
 	return nullptr;
 }
-
 Seller* System::accessSellerAccount(char* name, int password)
 /*
 This function provides a Seller Account for the user.
@@ -158,7 +169,6 @@ bool System::setSystemName(const char* name)
 	strcpy(this->name, name);
 	return true;
 }
-
 
 bool System::addBuyer(Buyer* newBuyer)
 {
@@ -212,18 +222,18 @@ bool System::increaseSellerArray()
 	sellers = temp;
 	return true;
 }
-bool System::advanceSerial()	
+
+
+
+bool System::addFeedbackToSeller(const char* sellerUsername, const Feedback* buyerFeedback)
 {
-	latestSerialNum += 1;
-	return true;
-}
-
-
-
-
-static bool allocationCheck(void* ptr)
-{
-	if (!ptr)
-		return false;
-	return true;
+	for (int i = 0; i < sellLogSize; i++)
+	{
+		if (strcmp(sellers[i]->username, sellerUsername) == 0) // Found the seller.
+			if (!sellers[i]->addFeedback(buyerFeedback))
+				return false;
+			else
+				return true;
+	}//for
+	return false;
 }

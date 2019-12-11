@@ -3,64 +3,54 @@
 #define __Seller_H
 
 #include "Product.h"
-//class Product;
-//const int LEN = 21;
+#include "Address.h"
 
-class Address;
 class Feedback;
 class Buyer;
-class ReceiptBuyer;
+class Receipt;
 
-const int UNKNOWN_INDEX = -10;
-const int NOT_FOUND = -1;
+//const int NOT_FOUND = -1;
 
 class Seller
 {
-public:
-	Seller() = delete;
-	Seller(char* name, int password, Address* address);
-
-//	Getters
-	const char* getUsername()											const;
-	const Address* getAddress()											const;
-	const Product* getProduct(const char* name, int& indexAtSeller)		const;	//	Explanation for index at bottom of page.
-	int getCatalogLogSize()												const;
-	
-	void showSeller()													const;
-	void showAllMerchandise()											const;
-	bool passwordCheck(int password)									const;
-
-//	Setters
-	bool changeUsername(const char* username);
-	bool resetPassword(const int password);
-	bool setAddress(Address* address);		//	QUESTION: can it be const address?
-
-	bool addReceipt(const ReceiptBuyer* receipt);
-	bool increaseRecordsSize();
-
-	bool addFeedback(Feedback* feedback);
-	bool increaseFeedbackSize();
-	bool addProductToMerch(Product* product);
-	bool increaseMerchandiseSize();
-
-	~Seller();
 private:
-	char			username[LEN];
-	int				password;
-	Address*		address;
+	char*					username;
+	int						password;
+	Address					address;
 
-	Feedback**		feedbacks;							//	dynamically allocated array of feedbacks received
-	int				feedLogSize, feedPhySize;			//	sizes for the feedback array
-	Product**		catalog;							//	dynamically allocated array of products
-	int				catLogSize, catPhySize;
-	ReceiptBuyer**	saleRecords;
-	int				recordsLogSize, recordsPhySize;
+	const Feedback**		feedbacks;							//	dynamically allocated array of feedbacks received
+	int						feedLogSize, feedPhySize;			//	sizes for the feedback array
+	Product**				catalog;							//	dynamically allocated array of products
+	int						catLogSize, catPhySize;
+
+public:
+// Constructors and Destructor
+	Seller() = delete;	//	 Delete default constructor.
+	Seller(char* name, int password, const Address& address);
+	Seller(const Seller&) = delete;	//	Delete copy constructor.
+	~Seller();
+
+//	Const methods
+	const char*				getUsername()							const;
+	const Address&			getAddress()							const;
+	const Product*			getProduct(const char* name)			const;	
+	int						getCatalogLogSize()						const;
+	
+	void					showSeller()							const;
+	void					showAllMerchandise()					const;
+	bool					passwordCheck(int password)				const;
+	void					showAllFeedbacks()						const;
+
+//	Non-const methods
+	bool					changeUsername(const char* username);
+	bool					resetPassword(int newPassword, int currentPasswordVerification);
+	bool					setAddress(const Address& other);		
+
+	bool					addFeedback(const Feedback* feedback);
+	bool					increaseFeedbackSize();
+	bool					addProductToMerch(Product* product);
+	bool					increaseMerchandiseSize();
+
+	friend class System;
 };
 #endif
-
-/*
-getProduct index parameter
-	...
-
-
-*/

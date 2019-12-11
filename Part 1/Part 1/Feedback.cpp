@@ -1,15 +1,24 @@
 #include "Feedback.h"
+#include "Product.h"
+#include "Buyer.h"
+#include <iostream>
+using namespace std;
 
-Feedback::Feedback(Date* date, const Buyer* feedbackGiver, char* appraisal) : date(this->date)	// not sure 'bout that
+Feedback::Feedback(const Date& date, const Buyer* feedbackGiver, char* appraisal, const Product* product) : date(date), appraisal(nullptr)
 {
-	setDate(date);
-	setFeedbackGiver(feedbackGiver);
-	setAppraisal(appraisal);
+	this->feedbackGiver = feedbackGiver;
+	this->appraisal = strdup(appraisal);
+	this->reviewedProduct = product;
+}
+
+Feedback::~Feedback()
+{
+	delete []appraisal;
 }
 
 // ----------------- GETTERS ----------------- //
 
-Date Feedback::getDate() const
+const Date& Feedback::getDate() const
 {
 	return this->date;
 }
@@ -24,27 +33,26 @@ const char* Feedback::getAppraisal() const
 	return this->appraisal;
 }
 
+void Feedback::showFeedback()				const
+{
+	cout << "Feedback about " << reviewedProduct->getName() << " by user " << feedbackGiver->getUsername() << ":\n";
+	cout << appraisal << endl;
+	date.show();
+	cout << endl;
+}
+
+
 // ----------------- SETTERS ----------------- //
 
-bool Feedback::setDate(Date* newDate)
+bool Feedback::updateAppraisal(char* newFeedback, const char* feedbackGiver, const Date& newdate)
 {
-	this->date = *newDate;	// shallow copy?
-	return true;
-}
-
-bool Feedback::setFeedbackGiver(const Buyer* giver)
-{
-	this->feedbackGiver = giver;
-	return true;
-}
-
-bool Feedback::setAppraisal(char* newAppraisal)
-{
-	if (strlen(newAppraisal) >= FEED_LEN)		// check if new feedback length is over FEED_LEN- return false
+	if (strcmp(this->feedbackGiver->getUsername(), feedbackGiver) != 0)
 		return false;
-	else
-	{
-		strcpy(this->appraisal, newAppraisal);
-		return true;
-	}
+
+	this->date = newdate;
+	delete[]appraisal;
+	appraisal = strdup(newFeedback);
+	return true;
 }
+
+

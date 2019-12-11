@@ -4,15 +4,19 @@
 #include <iostream>
 using namespace std;
 
-Product::Product(char* name, double price, int serial, eCategory category, Seller* seller, int indAtSeller, bool& check)	//	Constructor
+int Product::latestSerialNum = 1000;
+
+Product::Product(char* name, double price, eCategory category, Seller* seller, int indAtSeller, bool& check)	//	Constructor
 {
+	this->name = strdup(name);
 	bool nameCheck=setName(name);
 	bool priceCheck=setPrice(price);
-	setSerial(serial);
 	bool catCheck=setCategory(category);
 
 	this->sellerOfProduct = seller;
 	this->indAtSeller = indAtSeller;
+
+	serial = ++latestSerialNum;
 
 	if (!nameCheck || !priceCheck || !catCheck || sellerOfProduct==nullptr || indAtSeller <0)
 		check = false;
@@ -22,7 +26,7 @@ Product::Product(char* name, double price, int serial, eCategory category, Selle
 
 Product::~Product()		//	Destructor
 {
-	delete name;
+	delete []name;
 }
  // ----------------- GETTERS ----------------- //
 const char* Product::getName() const
@@ -53,7 +57,6 @@ void Product::showProduct() const
 	cout << "Serial Number: " << serial << endl;
 	cout << "Category: " << eCategoryNames[category] << endl;
 	cout << "Seller: " << sellerOfProduct->getUsername() << endl;
-	cout << endl;
 }
 
 
@@ -71,12 +74,6 @@ bool Product::setPrice(const double price)
 	if (price < 0)
 		return false;
 	this->price = price;
-	return true;
-}
-
-bool Product::setSerial(int serial)
-{
-	this->serial = serial;
 	return true;
 }
 
