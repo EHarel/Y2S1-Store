@@ -1,5 +1,6 @@
 #include "PurchaseHistory.h"
 
+// ----------------- C'TORS AND D'TOR ----------------- //
 PurchaseHistory::PurchaseHistory()
 {
 	phySize = 10;
@@ -9,26 +10,12 @@ PurchaseHistory::PurchaseHistory()
 	if (!receipts)
 		return;
 }
-
 PurchaseHistory::~PurchaseHistory()
 {
 	for (int i = 0; i < logSize; i++)
 		delete receipts[i];
 	delete []receipts;
 }
-
-
-
-int PurchaseHistory::getLogSize()	const
-{
-	return logSize;
-}
-
-Receipt**& PurchaseHistory::getReceipts()
-{
-	return receipts;
-}
-
 
 
 bool PurchaseHistory::increasePurchaseHistorySize()

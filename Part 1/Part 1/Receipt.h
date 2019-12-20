@@ -3,6 +3,9 @@
 #define __BUYRECEIPT_H
 
 #include "Cart.h"
+#include <string.h>
+#include <iostream>
+using namespace std;
 
 class Product;
 class Seller;
@@ -12,27 +15,26 @@ class Feedback;
 class Receipt
 {
 private:
-	const Product**			products;	//	Array of purchased products.
-	const Feedback**		feedbacks;	//	Feedbacks the buyer has left for these products.
-	// CHANGE TO CONST! THE FEEDBACK
-	int						numOfProducts;
-	double					totalCost;
-	const Buyer*			buyer;
+	const Product**				products;	//	Array of purchased products.
+	const Feedback**			feedbacks;	//	Feedbacks the buyer has left for these products.
+	int							numOfProducts;
+	double						totalCost;
+	const Buyer*				buyer;
 
 public:
-// Constructors and Destructor
+// C'tors and D'tor
 	Receipt() = delete;
 	Receipt(const Cart& cart);
 	~Receipt();
 
 // Const methods
-	const Product*			getProductByIndex(int i)		const;
-	int						getNumOfProducts()						const;
-	const Product**			getProducts()				const;
+	inline int					getNumOfProducts()			const	{ return numOfProducts; }
+	inline const Product**		getProducts()				const	{ return products; }
+	inline const Feedback**		getFeedbacks()				const	{ return feedbacks; }
+	const Product*				getProductByIndex(int i)	const;
 
 // Non-const methods
-	const Feedback**		getFeedbacks() const { return feedbacks; }
-	bool					addFeedbackToProd(const char* prodName, const char* sellerName, const Feedback* feedback);
+	bool						addFeedbackToProd(const char* prodName, const char* sellerName, const Feedback* feedback);
 };
 #endif 
 
@@ -52,6 +54,6 @@ Fields
 	since the class Product has a pointer to the seller of said product.
 
 Setters
-	No setters for numOfProducts and totalCost, to make them unchangeable.
+	No setters for numOfProducts and totalCost, to make them unchangeable. A receipt is meant to be permanent, as it is now.
 	Cannot initalize them with init line because they rely on data from the Cart which is also sent to the constructor.
 */

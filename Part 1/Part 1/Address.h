@@ -4,34 +4,37 @@
 
 class Address 
 {
-private: // All the strings are dynamically allocated.
-	char*		street;
-	int			houseNum;
-	char*		city;
-	char*		country;
+private: 
+	char*					street;
+	int						houseNum;
+	char*					city;
+	char*					country;
+
+// Private Methods
+	bool					checkLetterOnlyString(const char* str)	const;
+
 
 public:
-// Constructors and Destructor
-	Address() = delete;	// No default constructor.
+// C'tors and D'tor
 	Address(const char* street, int houseNumber, const char* city, const char* country);
 	Address(const Address& other);
 	Address(Address&& other);
 	~Address();
 
 //	Getters
-	const char* getStreet()		const;
-	int			getHouseNum()	const;
-	const char*	getCity()		const;
-	const char*	getCountry()	const;
-	void		showAddress()	const;
+	inline const char*		getStreet()			const { return street; }
+	inline int				getHouseNum()		const { return houseNum; }
+	inline const char*		getCity()			const { return city; }
+	inline const char*		getCountry()		const { return country; }
+	void					showAddress()		const;
 
 //	Setters
-	bool setStreet(const char* street);
-	bool setHouse(const int num);
-	bool setCity(const char* city);
-	bool setCountry(const char* country);
+	bool					setStreet(const char* street);
+	bool					setHouse(const int num);
+	bool					setCity(const char* city);
+	bool					setCountry(const char* country);
 
 // Operators
-	const Address& operator=(const Address& other);
+	const Address&			operator=(const Address& other);
 };
 #endif

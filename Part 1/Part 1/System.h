@@ -2,59 +2,96 @@
 #ifndef __SYSTEM_H
 #define __SYSTEM_H
 
-#include "Product.h"
+#include "Buyer.h"
 
-// const int LEN = 31;	//	PROBLEM: there needs to be one LEN for all. Where do we define it? What do we include? Or maybe we just make the name dynamically allocated?
-// Right now, LEN is located at Product and all include it
+// Consts
+const int BUYER_OPTION = 1;
+const int SELLER_OPTION = 2;
+const int STOP = -10;
+const int WISH_EXIT = 4;
+const int NAME_LEN = 31;
+const int FEED_LEN = 150;
+
+// Forward Declaration
 class Seller;
 class Buyer;
+class Feedback;
+class Date;
+
+
 
 class System
 {
 private:
-	char					name[LEN];			// name of the system
-	Buyer**					buyers;
-	int						buyLogSize, buyPhySize;
-	Seller**				sellers;			//	Dynamically allocated array of Sellers.
-	int						sellLogSize, sellPhySize;
-	// products array
+	char					m_name[NAME_LEN];			
+	Buyer**					m_buyers;
+	int						m_buyLogSize, m_buyPhySize;
+	Seller**				m_sellers;		
+	int						m_sellLogSize, m_sellPhySize;
 
 public:
-// Constructors and Destructor
+// C'tors and D'tor
 	System() = delete;
 	System(const char* name);
 	System(const System&) = delete;
 	~System();
 	
 // Const methods
-	const Buyer**			getAllBuyers()					const;
-	const Seller**			getAllSellers()					const;
-	const Buyer*			getBuyer(int index)				const;
-	const Seller*			getSeller(int index)				const;
-	bool					isAvailableUsername(const char* name)		const;
+	inline const Buyer**	getAllBuyers()							const	{ return (const Buyer**)m_buyers; }
+	inline const Seller**	getAllSellers()							const	{ return (const Seller**)m_sellers; }
+	inline int				getBuyerLogSize()						const	{ return m_buyLogSize; }
+	inline int				getBuyerPhySize()						const	{ return m_buyPhySize; }
+	inline int				getSellerLogSize()						const	{ return m_sellLogSize; }
+	inline int				getSellerPhySize()						const	{ return m_sellPhySize; }
+	const Buyer*			getBuyer(int index)						const;
+	const Seller*			getSeller(int index)					const;
+	bool					isAvailableUsername(const char* name)	const;
+	void					showAllProducts()						const;
 	
-	int						getBuyerLogSize()							const;
-	int						getBuyerPhySize()							const;
-	int						getSellerLogSize()							const;
-	int						getSellerPhySize()							const;
-
-	void					showAllProducts()							const;
-	
-	
-	Buyer*					accessBuyerAccount(char* name, int password);		//	Currently it returns a pointer rather than Buyer&, because a pointer allows an indication that the password isn't correct.
-	Seller*					accessSellerAccount(char* name, int password);		//	IDEA: find a way to return Class& instead of pointer, with some sort of password validation?
-
 // Non-const methods
-	bool					setSystemName(const char* name);
-
+	Buyer*					accessBuyerAccount(char* name, int password);
+	Seller*					accessSellerAccount(char* name, int password);
 	bool					addBuyer(Buyer* newBuyer);
 	bool					addSeller(Seller* newSeller);
-
-
 	bool					addFeedbackToSeller(const char* sellerUsername, const Feedback* buyerFeedback);
 
+// Menu Options
+	void					runMenu();
+	void					createNewAccount();
+	bool					addAccountToSystem(char* name, int password, int accountType);
+	void					accessAccountMenu();
+	void					showAllBuyers()							const;
+	void					showAllSellers()						const;
+	void					showProductsMenu()						const;
+	void					showSpecificProduct()					const;
 
-	bool					increaseBuyerArray();			//	IDEA: Maybe concentrate them both into a single function? The downside is possibly increasing an array we don't want to, if it happens that the log size is equal to the physical (because it will run both checks)
+// Buyer related functions
+	void					runBuyerMenu(Buyer*& buyer);
+	void					addFeedbackToSeller(Buyer*&);
+	void					addToWishlist(Buyer*& buyer);
+	void					addToCart(Buyer*& buyer);
+	void					checkout(Buyer*& buyer);
+
+// Seller related functions
+	void					runSellerMenu(Seller*& seller);
+	void					addItemToSeller(Seller*& seller);
+
+private:
+// Private methods
+	int						printMainMenuOptions();
+	int						readAccountType();
+	bool					chooseNewUsername(char* name);
+	bool					continueCheck();
+	Feedback*				createFeedback(const Product* prod, const Buyer* feedbackGiver);
+	Address					createAddress();
+	Date					createDate();
+	Buyer*					signInBuyer();
+	Seller*					signInSeller();
+	void					cleanBuffer();
+	void					readProductName(char* name) const;
+	int						wishlistMenuOptions();
+	int						chooseFromAvailableProducts(const Product** availProducts, int availProductsCount);
+	bool					increaseBuyerArray();
 	bool					increaseSellerArray();
 };
 #endif 

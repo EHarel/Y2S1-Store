@@ -6,7 +6,6 @@ Each Buyer makes use of a Wishlist and a Cart.
 Originally all these methods and variables were within Buyer, but because they became so numerous,
 we figured it was better to split them into their own classes.
 */
-
 #ifndef __CART_H
 #define __CART_H
 
@@ -21,19 +20,20 @@ private:
 	double						cost;				//	Total cost of all products.
 	const Buyer*				cartOwner;
 
+// Private Methods
 	bool						increaseCartSize();	//	The method allocates, copies and deletes. It's very costly, so we want it done only within the class, and not be called from outside.
 
 public:
-// Constructors and Destructor
+// C'tors and D'tor
 	Cart();
-	Cart(const Cart&) = delete;	//	No copy constructor.
+	Cart(const Cart&) = delete;	//	No copy constructor. Just as we don't copy Buyers, there's no reason to copy a Cart as of now.
 	~Cart();
 
 // Const methods
-	const Product**				getProducts()		const;	//	Items for check-out.
-	int							getLogSize()		const;
-	double						getCost()			const;
-	const Buyer*				getOwner()			const; 
+	inline const Product**		getProducts()		const	{ return cart; }
+	inline int					getLogSize()		const	{ return logSize; }
+	inline double				getCost()			const	{ return cost; }
+	inline const Buyer*			getOwner()			const	{ return cartOwner; }
 	void						showCart()			const;
 
 // Non-const methods

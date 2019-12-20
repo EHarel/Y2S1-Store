@@ -1,9 +1,7 @@
 #include "Cart.h"
 #include "Product.h"
 
-#include <iostream>
-using namespace std;
-
+// ----------------- C'TORS AND D'TOR ----------------- //
 Cart::Cart()
 {
 	phySize = 10;
@@ -14,29 +12,11 @@ Cart::Cart()
 
 	cost = 0;
 }
-
 Cart::~Cart()
 {
 	delete[]cart;
 }
 
-double Cart::getCost() const
-{
-	return cost;
-}
-
-const Product** Cart::getProducts() const	
-{
-	return cart;
-}
-int Cart::getLogSize() const
-{
-	return logSize;
-}
-const Buyer* Cart::getOwner() const
-{
-	return cartOwner;
-}
 
 void Cart::showCart() const
 {
@@ -52,7 +32,6 @@ void Cart::showCart() const
 		cout << endl;
 	}
 }
-
 bool Cart::addToCart(const Product* product)
 {
 	if (!product)
@@ -77,7 +56,6 @@ bool Cart::increaseCartSize()
 	cart = temp;
 	return true;
 }
-
 void Cart::emptyCart()
 {
 	for (int i = 0; i < logSize; i++)
@@ -87,4 +65,3 @@ void Cart::emptyCart()
 	logSize = 0;
 	cost = 0;
 }
-

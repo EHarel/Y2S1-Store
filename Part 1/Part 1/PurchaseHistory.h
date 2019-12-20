@@ -5,24 +5,22 @@ Within here you can find records of all the items he bought.
 #ifndef __PURCHASEHISTORY_H
 #define __PURCHASEHISTORY_H
 
-class Receipt;
+#include "Receipt.h"
 
 class PurchaseHistory
 {
 private:
-	Receipt**		receipts;			//	Dynamic array of all receipts.
-	int				logSize, phySize;	//	variables to manage the dynamic array.
+	Receipt**				receipts;			//	Dynamic array of all receipts.
+	int						logSize, phySize;	//	variables to manage the dynamic array.
 
 public:
-// Constructors and Destructor
+// C'tors and D'tor
 	PurchaseHistory();
 	~PurchaseHistory();
 
-	int getLogSize()	const;
-
-	Receipt**& getReceipts();
-
-	bool increasePurchaseHistorySize();
+	inline int				getLogSize()	const	{ return logSize; }
+	inline Receipt**&		getReceipts()			{ return receipts; }
+	bool					increasePurchaseHistorySize();
 
 	friend class Buyer;
 };

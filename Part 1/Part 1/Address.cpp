@@ -3,24 +3,19 @@
 #include <iostream>
 using namespace std;
 
-static bool checkLetterOnlyString(const char* str);
-
-
-
-Address::Address(const char* street, int houseNumber, const char* city, const char* country) : street(nullptr), city(nullptr), country(nullptr)
+// ----------------- C'TORS AND D'TOR----------------- //
+Address::Address(const char* street, int houseNumber, const char* city, const char* country) : street(NULL), city(NULL), country(NULL)
 {
 	setStreet(street);
 	setHouse(houseNumber);
 	setCity(city);
 	setCountry(country);
 }
-
-Address::Address(const Address& other)	: street(nullptr), city(nullptr), country(nullptr) //	Copy c'tor.
+Address::Address(const Address& other)	: street(NULL), city(NULL), country(NULL) //	Copy c'tor.
 {
 	*this = other;
 }
-
-Address::Address(Address&& other) : street(nullptr), city(nullptr), country(nullptr)			//	Move c'tor.
+Address::Address(Address&& other) //	Move c'tor.
 {
 	this->street = other.street;
 	setHouse(other.houseNum);
@@ -31,7 +26,6 @@ Address::Address(Address&& other) : street(nullptr), city(nullptr), country(null
 	other.city = nullptr;
 	other.country = nullptr;
 }
-
 Address::~Address()							//	D'tor.
 {
 	delete[]street;
@@ -40,34 +34,7 @@ Address::~Address()							//	D'tor.
 }
 
 
-
-// ----------------- GETTERS ----------------- //
-
-const char* Address::getStreet()	const
-{
-	return street;
-}
-int			Address::getHouseNum()	const
-{
-	return houseNum;
-}
-const char*	Address::getCity()		const
-{
-	return city;
-}
-const char*	Address::getCountry()	const
-{
-	return country;
-}
-
-void		Address::showAddress()	const
-{
-	cout << street << " " << houseNum << ", " << city << ", " << country << endl;
-}
-
-
 // ----------------- SETTERS ----------------- //
-
 bool Address::setStreet(const char* street)
 {
 	if (checkLetterOnlyString(street) == false)
@@ -77,7 +44,6 @@ bool Address::setStreet(const char* street)
 	this->street = strdup(street);
 	return true;
 }
-
 bool Address::setHouse(const int num)
 {
 	if (num < 1)
@@ -85,7 +51,6 @@ bool Address::setHouse(const int num)
 	this->houseNum = num;
 	return true;
 }
-
 bool Address::setCity(const char* city)
 {
 
@@ -95,7 +60,6 @@ bool Address::setCity(const char* city)
 	this->city = strdup(city);
 	return true;
 }
-
 bool Address::setCountry(const char* country)
 {
 	if (checkLetterOnlyString(country) == false)
@@ -107,7 +71,6 @@ bool Address::setCountry(const char* country)
 
 
 // ----------------- OPERATORS ----------------- //
-
 const Address& Address::operator=(const Address& other)
 {
 	if (this == &other)
@@ -126,11 +89,8 @@ const Address& Address::operator=(const Address& other)
 }
 
 
-
-
-// ----------------- STATIC FUNCTION IMPLEMENTATION ----------------- //
-
-static bool checkLetterOnlyString(const char* str)
+// ----------------- MISC ----------------- //
+bool Address::checkLetterOnlyString(const char* str) const
 //This function receives a string and checks that it contains only letters, or a space.
 //Used originally to check city and country names.
 {
@@ -140,9 +100,13 @@ static bool checkLetterOnlyString(const char* str)
 	while (str[i] != '\0')
 	{
 		ch = str[i];
-		if ((ch <= 'z' && ch >= 'a') && (ch <= 'Z' && ch >= 'A') && (ch!=' '))
+		if ((ch <= 'z' && ch >= 'a') && (ch <= 'Z' && ch >= 'A') && (ch != ' '))
 			return false;
 		i++;
 	}
 	return true;
+}
+void Address::showAddress() const
+{
+	cout << street << " " << houseNum << ", " << city << ", " << country << endl;
 }

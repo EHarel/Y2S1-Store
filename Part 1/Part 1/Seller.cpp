@@ -3,187 +3,163 @@
 #include "Address.h"
 #include "Feedback.h"
 
-#include <iostream>
-using namespace std;
-
-
-Seller::Seller(char* name, int password, const Address& address) : address(address)
+// ----------------- C'TORS AND D'TOR ----------------- //
+Seller::Seller(char* name, int password, const Address& address) : m_address(address)
 {
-	this->username = strdup(name);
-	this->password = password;
+	this->m_username = strdup(name);
+	this->m_password = password;
 
-	feedPhySize = 10;
-	feedLogSize = 0;
-	feedbacks = new const Feedback*[feedPhySize];
-	for (int i = 0; i < feedPhySize; i++)
-		feedbacks[i] = nullptr;
-	if (!feedbacks)
+	m_feedPhySize = 10;
+	m_feedLogSize = 0;
+	m_feedbacks = new const Feedback*[m_feedPhySize];
+	for (int i = 0; i < m_feedPhySize; i++)
+		m_feedbacks[i] = nullptr;
+	if (!m_feedbacks)
 		exit(1);
 
-	catPhySize = 10;
-	catLogSize = 0;
-	catalog = new Product*[catPhySize];
-	if (!catalog)
+	m_catPhySize = 10;
+	m_catLogSize = 0;
+	m_catalog = new Product*[m_catPhySize];
+	if (!m_catalog)
 		exit(1);
 }//constructor
-
 Seller::~Seller()
 {
-	delete[]username;
-
 	int i = 0;
-	for (i = 0; i < feedLogSize; i++)
-		delete feedbacks[i];
-	delete[]feedbacks;
+	for (i = 0; i < m_feedLogSize; i++)
+		delete m_feedbacks[i];
+	delete[]m_feedbacks;
 
-	for (i = 0; i < catLogSize; i++)
-		delete catalog[i];
-	delete[]catalog;
+	for (i = 0; i < m_catLogSize; i++)
+		delete m_catalog[i];
+	delete[]m_catalog;
+
+	delete[]m_username;
 }
 
 
-
-// ------------------------------- GETTERS ------------------------------- //
-
-const char* Seller::getUsername() const
-{
-	return username;
-}
-const Address& Seller::getAddress() const
-{
-	return address;
-}
-
+// ----------------- GETTERS ----------------- //
 const Product* Seller::getProduct(const char* name) const
 {
-	for (int i = 0; i < catLogSize; i++)
+	for (int i = 0; i < m_catLogSize; i++)
 	{
-		if (strcmp(catalog[i]->getName(), name) == 0)
-			return catalog[i];
+		if (strcmp(m_catalog[i]->getName(), name) == 0) // Compare names.
+			return m_catalog[i];
 	}
 	return nullptr;	//	Didn't find the product.
 }
-
-int Seller::getCatalogLogSize() const
+const Product* Seller::getProduct(int serial) const
 {
-	return catLogSize;
-}
-
-
-void Seller::showSeller() const
-{
-	cout << "Username: " << username << endl;
-	address.showAddress();
-}
-
-void Seller::showAllMerchandise() const
-{
-	for (int i = 0; i < catLogSize; i++)
+	for (int i = 0; i < m_catLogSize; i++)
 	{
-		cout << "Item " << i + 1 << endl;
-		catalog[i]->showProduct();
-		cout << endl;
+		if (m_catalog[i]->getSerial() == serial) // Compare serial numbers.
+			return m_catalog[i];
 	}
-}
-
-bool Seller::passwordCheck(int password) const
-// This function receives a password and compares it with the user's password, to see if it is the same.
-{
-	if(this->password==password)
-		return true;
-	else
-		return false;
-}
-
-void Seller::showAllFeedbacks()	const
-{
-	for (int i = 0; i < feedLogSize; i++)
-	{
-		cout << i+1 << ") "; 
-		feedbacks[i]->showFeedback();
-	}
-	cout << endl;
+	return nullptr; // Didn't find the product.
 }
 
 
-
-
-// ------------------------------- NON-CONST METHODS ------------------------------- //
-
+// ----------------- SETTERS ----------------- //
 bool Seller::changeUsername(const char* username)
 {
-	strcpy(this->username, username);
+	strcpy(this->m_username, username);
 	return true;
 }
-
 bool Seller::resetPassword(int newPassword, int currentPasswordVerification)
 {
-	if (currentPasswordVerification != password)
+	if (currentPasswordVerification != m_password)
 		return false;
 	if (newPassword < 0)	//	Cannot enter negative number.
 		return false;
-	if (password < 0)
+	if (m_password < 0)
 		return false;		//	cannot enter negative number
-	this->password = password;
+	this->m_password = m_password;
 	return true;
 }
-
 bool Seller::setAddress(const Address& other)
 {
-	address = other;
+	m_address = other;
 	return true;
 }
 
+
+// ----------------- MISC ----------------- //
+void Seller::showSeller() const
+{
+	cout << "Username: " << m_username << endl;
+	m_address.showAddress();
+}
+void Seller::showAllMerchandise() const
+{
+	for (int i = 0; i < m_catLogSize; i++)
+	{
+		cout << "Item " << i + 1 << endl;
+		m_catalog[i]->showProduct();
+		cout << endl;
+	}
+}
+void Seller::showAllFeedbacks()	const
+{
+	for (int i = 0; i < m_feedLogSize; i++)
+	{
+		cout << i + 1 << ") ";
+		m_feedbacks[i]->showFeedback();
+	}
+	cout << endl;
+}
 bool Seller::addFeedback(const Feedback* feedback)
 {
 	if (!feedback)
 		return false;
 
-	if (feedLogSize == feedPhySize)
+	if (m_feedLogSize == m_feedPhySize)
 		if (!increaseFeedbackSize())	//	failed to increase size
 			return false;
 
-	feedbacks[feedLogSize++] = feedback;
+	m_feedbacks[m_feedLogSize++] = feedback;
 	return true;
 }
-bool Seller::increaseFeedbackSize()
-{
-	feedPhySize *= 2;
-	const Feedback** temp = new const Feedback*[feedPhySize];
-	if (!temp)		//	Failed to allocate.
-		return false;
-	int i = 0;
-	for (i = 0; i < feedLogSize; i++)
-		temp[i] = feedbacks[i];
-	int j;
-	for (j = i; j < feedPhySize; j++)
-		temp[i] = nullptr;
-	delete[]feedbacks;
-	feedbacks = temp;
-	return true;
-}
-
 bool Seller::addProductToMerch(Product* product)
 {
 	if (!product)
 		return false;
-	
-	if (catLogSize == catPhySize)
+
+	if (m_catLogSize == m_catPhySize)
 		if (!increaseMerchandiseSize())
 			return false;
 
-	catalog[catLogSize++] = product;
+	m_catalog[m_catLogSize++] = product;
+	return true;
+}
+
+
+// ----------------- PRIVATE ----------------- //
+bool Seller::increaseFeedbackSize()
+{
+	m_feedPhySize *= 2;
+	const Feedback** temp = new const Feedback*[m_feedPhySize];
+	if (!temp)		//	Failed to allocate.
+		return false;
+	int i = 0;
+	for (i = 0; i < m_feedLogSize; i++)
+		temp[i] = m_feedbacks[i];
+	int j;
+	for (j = i; j < m_feedPhySize; j++)
+		temp[i] = nullptr;
+	delete[]m_feedbacks;
+	m_feedbacks = temp;
 	return true;
 }
 bool Seller::increaseMerchandiseSize()
 {
-	catPhySize *= 2;
-	Product** temp = new Product*[catPhySize];
+	m_catPhySize *= 2;
+	Product** temp = new Product*[m_catPhySize];
 	if (!temp)		//	Failed to allocate.
 		return false;
-	for (int i = 0; i < feedLogSize; i++)
-		temp[i] = catalog[i];
-	delete[]catalog;
-	catalog = temp;
+	for (int i = 0; i < m_feedLogSize; i++)
+		temp[i] = m_catalog[i];
+	delete[]m_catalog;
+	m_catalog = temp;
 	return true;
 }
+

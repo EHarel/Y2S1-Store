@@ -2,54 +2,53 @@
 #ifndef __Seller_H
 #define __Seller_H
 
-#include "Product.h"
 #include "Address.h"
+#include "Feedback.h"
 
-class Feedback;
 class Buyer;
 class Receipt;
 
-//const int NOT_FOUND = -1;
 
 class Seller
 {
 private:
-	char*					username;
-	int						password;
-	Address					address;
+	char*					m_username;
+	int						m_password;
+	Address					m_address;
 
-	const Feedback**		feedbacks;							//	dynamically allocated array of feedbacks received
-	int						feedLogSize, feedPhySize;			//	sizes for the feedback array
-	Product**				catalog;							//	dynamically allocated array of products
-	int						catLogSize, catPhySize;
+	const Feedback**		m_feedbacks;							//	dynamically allocated array of feedbacks received
+	int						m_feedLogSize, m_feedPhySize;			//	sizes for the feedback array
+	Product**				m_catalog;								//	dynamically allocated array of products
+	int						m_catLogSize, m_catPhySize;
+
+// Private Methods
+	bool					increaseFeedbackSize();
+	bool					increaseMerchandiseSize();
 
 public:
-// Constructors and Destructor
-	Seller() = delete;	//	 Delete default constructor.
+// C'tors and D'tor
+	Seller() = delete;	
 	Seller(char* name, int password, const Address& address);
-	Seller(const Seller&) = delete;	//	Delete copy constructor.
+	Seller(const Seller&) = delete;	
 	~Seller();
 
 //	Const methods
-	const char*				getUsername()							const;
-	const Address&			getAddress()							const;
-	const Product*			getProduct(const char* name)			const;	
-	int						getCatalogLogSize()						const;
-	
-	void					showSeller()							const;
-	void					showAllMerchandise()					const;
-	bool					passwordCheck(int password)				const;
-	void					showAllFeedbacks()						const;
+	inline const char*		getUsername()						const	{ return m_username; }
+	inline const Address&	getAddress()						const	{ return m_address; }
+	inline int				getCatalogLogSize()					const	{ return m_catLogSize; }
+	inline bool				passwordCheck(int password)			const	{ return m_password == password; }
+	const Product*			getProduct(const char* name)		const;	
+	const Product*			getProduct(int serial)				const;
+	void					showSeller()						const;
+	void					showAllMerchandise()				const;
+	void					showAllFeedbacks()					const;
 
 //	Non-const methods
 	bool					changeUsername(const char* username);
 	bool					resetPassword(int newPassword, int currentPasswordVerification);
 	bool					setAddress(const Address& other);		
-
 	bool					addFeedback(const Feedback* feedback);
-	bool					increaseFeedbackSize();
 	bool					addProductToMerch(Product* product);
-	bool					increaseMerchandiseSize();
 
 	friend class System;
 };

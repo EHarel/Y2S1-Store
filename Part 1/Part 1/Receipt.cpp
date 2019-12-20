@@ -1,12 +1,7 @@
-#include "Product.h"
-#include "Buyer.h"
 #include "Receipt.h"
-#include <string.h>
 #include "Seller.h"
 
-#include <iostream>
-using namespace std;
-
+// ----------------- C'TORS AND D'TOR ----------------- //
 Receipt::Receipt(const Cart& cart)
 /*
 The constructor of Receipt receives the buyer's cart, and copies from it all the products.
@@ -22,20 +17,16 @@ The constructor of Receipt receives the buyer's cart, and copies from it all the
 	for (int i = 0; i < numOfProducts; i++)
 	{
 		products[i] = new const Product((*cartProducts[i]));
-		if (!products[i])
+		if (!products[i]) // Alocation check
 			exit(1);
 		feedbacks[i] = nullptr;
 	}
 
 }
-
 Receipt::~Receipt()
 {
 	for (int i = 0; i < numOfProducts; i++)
-	{
 		delete products[i];
-		delete feedbacks[i];
-	}
 	delete[]products;
 	delete[]feedbacks;
 }
@@ -47,21 +38,6 @@ const Product* Receipt::getProductByIndex(int i)		const
 		return nullptr;
 	return products[i];
 }
-
-
-int Receipt::getNumOfProducts()						const
-{
-	return numOfProducts;
-}
-const Product** Receipt::getProducts()				const
-{
-	return products;
-}
-
-
-
-
-
 bool Receipt::addFeedbackToProd(const char* prodName, const char* sellerName, const Feedback* feedback)
 {
 	for(int i = 0; i < numOfProducts; i++)
