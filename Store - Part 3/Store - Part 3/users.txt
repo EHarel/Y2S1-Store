@@ -1,0 +1,46 @@
+9
+Buyer CustomerMansion
+1111 CustomerLand
+USA
+The Magnificent Clown
+0
+Buyer Cool Street
+420 Mega City
+Super Country
+Customer2
+0
+Seller VendorHouse
+1 VendorStreet
+VendorTown
+Vendor1
+0
+Seller VendorHouse
+1 VendorStreet
+VendorTown
+Trump Towers :D
+0
+Seller VendorHouse
+1 VendorStreet
+VendorTown
+Vendor3
+0
+BuyerSeller Hybrid Club
+12 Exclusive Land
+EXOR
+BuyerSeller1
+0
+Buyer New Guy Street
+321 CityLand
+bestCountry
+Buyer400
+0
+Seller Harbaa
+5 Shitland
+Shitcountry
+Best Buy
+0
+BuyerSeller The Professionals
+7 CR7
+Made In Heaven
+The Pro Air guy
+0
