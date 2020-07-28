@@ -1,2 +1,6 @@
-# Y2S1-Project---Part-1
-Part 1 of the ongoing Project of the first semester of the 2nd year, of creating an online store.
+# Y2S1-Store
+
+C++ and OOP Final Project.
+
+Online store with accounts that are either sellers, customers or both.
+The project was our first introduction to implementation of polymorphism and inheritance as well as C++ in general.
